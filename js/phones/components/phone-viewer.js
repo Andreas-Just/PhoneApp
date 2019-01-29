@@ -6,14 +6,13 @@ export default class PhoneViewer extends Component {
 
 		this._onBack = onBack;
 
-		this._element.addEventListener('click', (event) => {
-			const backButton = event.target.closest('[data-component="back-button"]');
+		this.on('click', 'back-button', this._onBack);
 
-			if (!backButton) {
-				return;
-			}
+		this.on('click', 'small-image', (event) => {
+			const smallImage = event.target;
+			const largeImage = this._element.querySelector('[data-element="large-image"]');
 
-			this._onBack();
+			largeImage.src = smallImage.src;
 		});
   }
 
@@ -29,9 +28,14 @@ export default class PhoneViewer extends Component {
   	const phone = this._phoneDetails;
 
     this._element.innerHTML = `
-      <img alt="Large image" class="phone" src="${ phone.images[0] }">
+      <img 
+      	data-element="large-image"
+      	src="${ phone.images[0] }"
+      	class="phone" 
+      	alt="Large image" 
+      >
 
-			<button data-component="back-button">
+			<button data-element="back-button">
 				Back
 			</button>
 			<button>Add to basket</button>
@@ -39,27 +43,18 @@ export default class PhoneViewer extends Component {
 	
 			<h1>${ phone.name }</h1>
 	
-			<p>Motorola XOOM with Wi-Fi has a super-powerful dual-core processor and Android™ 3.0 (Honeycomb) — the Android platform designed specifically for tablets. With its 10.1-inch HD widescreen display, you’ll enjoy HD video in a thin, light, powerful and upgradeable tablet.</p>
+			<p>${ phone.description }</p>
 	
 			<ul class="phone-thumbs">
-				<li>
-					<img alt="Small image" src="img/phones/motorola-xoom-with-wi-fi.0.jpg">
-				</li>
-				<li>
-					<img alt="Small image" src="img/phones/motorola-xoom-with-wi-fi.1.jpg">
-				</li>
-				<li>
-					<img alt="Small image" src="img/phones/motorola-xoom-with-wi-fi.2.jpg">
-				</li>
-				<li>
-					<img alt="Small image" src="img/phones/motorola-xoom-with-wi-fi.3.jpg">
-				</li>
-				<li>
-					<img alt="Small image" src="img/phones/motorola-xoom-with-wi-fi.4.jpg">
-				</li>
-				<li>
-					<img alt="Small image" src="img/phones/motorola-xoom-with-wi-fi.5.jpg">
-				</li>
+				${ phone.images.map(imageUrl => `
+					<li>
+						<img 
+							data-element="small-image"
+							src="${ imageUrl }"
+							alt="Small image" 
+						>
+					</li>
+				`).join('') }
 			</ul>
     `;
   }
