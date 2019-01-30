@@ -7,6 +7,10 @@ export default class ShoppingCart extends Component {
 		this._render();
 	}
 
+	addItem(phoneId) {
+		console.log(phoneId);
+	}
+
 	_render() {
 		this._element.innerHTML = `
       <p>Shopping Cart</p>

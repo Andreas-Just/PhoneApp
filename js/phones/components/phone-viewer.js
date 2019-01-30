@@ -14,6 +14,10 @@ export default class PhoneViewer extends Component {
 
 			largeImage.src = smallImage.src;
 		});
+
+		this.on('click', 'add-button', () => {
+			this.emit('added-from-viewer', this._phoneDetails.id);
+		});
   }
 
   show(phoneDetails) {
@@ -38,7 +42,9 @@ export default class PhoneViewer extends Component {
 			<button data-element="back-button">
 				Back
 			</button>
-			<button>Add to basket</button>
+			<button data-element="add-button">
+				Add to basket
+			</button>
 	
 	
 			<h1>${ phone.name }</h1>

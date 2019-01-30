@@ -22,25 +22,35 @@ export default class PhonesPage {
 			phones: PhoneService.getAll(),
 		});
 
-		this._catalog.subscribe(
-			'phone-selected',
-
-			(phoneId) => {
+		this._catalog.subscribe('phone-selected', (phoneId) => {
 				const phoneDetails = PhoneService.getById(phoneId);
 
 				this._catalog.hide();
 				this._viewer.show(phoneDetails);
 			}
 		);
+
+		this._catalog.subscribe('added-from-catalog', (phoneId) => {
+			const phoneDetails = PhoneService.getById(phoneId);
+
+			this._cart.addItem(phoneDetails);
+		});
 	}
 
 	_initViewer() {
 		this._viewer = new PhoneViewer({
 			element: document.querySelector('[data-component="phone-viewer"]'),
 		});
+
 		this._viewer.subscribe('back', () => {
 			this._viewer.hide();
 			this._catalog.show();
+		});
+
+		this._viewer.subscribe('added-from-viewer', (phoneId) => {
+			const phoneDetails = PhoneService.getById(phoneId);
+
+			this._cart.addItem(phoneDetails);
 		});
 	}
 
