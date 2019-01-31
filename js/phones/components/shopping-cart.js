@@ -4,22 +4,33 @@ export default class ShoppingCart extends Component {
 	constructor({ element }) {
 		super({ element });
 
-		this._items = [];
+		this._items = new Map();
 
 		this._render();
 	}
 
 	addItem(phoneId) {
-
-		this._items.push(phoneId);
 		
+		if (this._items.size) {
 
+			if (this._items.has(phoneId)) {
+				let count = this._items.get(phoneId);
+
+				count++;
+				this._items.set(phoneId, count);
+
+			} else {
+				this._items.set(phoneId, 1);
+			}
+
+		} else {
+			this._items.set(phoneId, 1);
+		}
 
 		this._render();
-		console.log(phoneId);
 	}
 
-	_getItemHtml(item) {
+	_getItemHtml(item, count) {
 		return `
       <li 
       	data-element="phone"
@@ -36,14 +47,15 @@ export default class ShoppingCart extends Component {
 					data-element="items-count"
 					class="shopping-cart__amount"
 				>
-					Qty: <br> ${ item.amount }
+					Qty: <br> ${ count }
 				</span>
 				
-				<i 
+				<span 
 					data-phone-id=${ item.id }
 					class="shopping-cart__delete"
 				>
-				</i>
+				X
+				</span>
 				
 			</li>
     `;
@@ -57,10 +69,10 @@ export default class ShoppingCart extends Component {
       	class="shopping-cart__list"
       >
       
-        ${ this._items.map(item =>
+        ${ [...this._items].map(item =>
 
-					this._getItemHtml(item)
-		
+					this._getItemHtml(item[0], item[1])
+
 				).join('') }
         
       </ul>
