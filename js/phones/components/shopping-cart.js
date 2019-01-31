@@ -7,6 +7,28 @@ export default class ShoppingCart extends Component {
 		this._items = new Map();
 
 		this._render();
+
+		this.on('click', 'item-del', (event) => {
+			let phoneElement = event.target.closest('[data-element="phone"]');
+			let id = phoneElement.dataset.phoneId;
+
+			[...this._items].map(item => {
+					this._delItem(item[0], item[1], id)
+			});
+		});
+	}
+
+	_delItem(item, count, id) {
+
+		if (item.id === id && count > 1) {
+			count--;
+			this._items.set(item, count);
+
+		} else if (item.id === id) {
+			this._items.delete(item);
+		}
+
+		this._render();
 	}
 
 	addItem(phoneId) {
@@ -14,8 +36,8 @@ export default class ShoppingCart extends Component {
 		if (this._items.size) {
 
 			if (this._items.has(phoneId)) {
-				let count = this._items.get(phoneId);
 
+				let count = this._items.get(phoneId);
 				count++;
 				this._items.set(phoneId, count);
 
@@ -33,6 +55,7 @@ export default class ShoppingCart extends Component {
 	_getItemHtml(item, count) {
 		return `
       <li 
+      	data-phone-id=${ item.id }
       	data-element="phone"
       	class="shopping-cart__item"
       >
@@ -44,7 +67,7 @@ export default class ShoppingCart extends Component {
 				
 				<span class="shopping-cart__name">${ item.name }</span>
 				<span 
-					data-element="items-count"
+					data-element="item-count"
 					class="shopping-cart__amount"
 				>
 					Qty: <br> ${ count }
@@ -52,6 +75,7 @@ export default class ShoppingCart extends Component {
 				
 				<span 
 					data-phone-id=${ item.id }
+					data-element="item-del"
 					class="shopping-cart__delete"
 				>
 				X
