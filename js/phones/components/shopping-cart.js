@@ -4,68 +4,67 @@ export default class ShoppingCart extends Component {
 	constructor({ element }) {
 		super({ element });
 
-		this._items = new Map();
+		this._itemsMap = new Map();
 
 		this._render();
 
 		this.on('click', 'item-del', (event) => {
-			let phoneElement = event.target.closest('[data-element="phone"]');
-			let id = phoneElement.dataset.phoneId;
+			let itemList = event.target.closest('[data-element="phone"]');
+			let phoneId = itemList.dataset.phoneId;
 
-			[...this._items].map(item => {
-					this._delItem(item[0], item[1], id)
+			this._itemsMap.forEach((count, phone) => {
+					this._delItem(phone, count, phoneId)
 			});
 		});
 	}
 
-	_delItem(item, count, id) {
-
-		if (item.id === id && count > 1) {
-			count--;
-			this._items.set(item, count);
-
-		} else if (item.id === id) {
-			this._items.delete(item);
-		}
-
-		this._render();
-	}
-
 	addItem(phoneId) {
-		
-		if (this._items.size) {
 
-			if (this._items.has(phoneId)) {
+		if ( this._itemsMap.size ) {
 
-				let count = this._items.get(phoneId);
+			if ( this._itemsMap.has(phoneId) ) {
+				let count = this._itemsMap.get(phoneId);
 				count++;
-				this._items.set(phoneId, count);
+				this._itemsMap.set(phoneId, count);
 
 			} else {
-				this._items.set(phoneId, 1);
+				this._itemsMap.set(phoneId, 1);
 			}
 
 		} else {
-			this._items.set(phoneId, 1);
+			this._itemsMap.set(phoneId, 1);
 		}
 
 		this._render();
 	}
 
-	_getItemHtml(item, count) {
+	_delItem(phone, count, phoneId) {
+
+		if ( phone.id === phoneId && count > 1 ) {
+			count--;
+			this._itemsMap.set(phone, count);
+
+		} else if ( phone.id === phoneId ) {
+			this._itemsMap.delete(phone);
+		}
+
+		this._render();
+	}
+
+	_getItemHtml(phone, count) {
 		return `
       <li 
-      	data-phone-id=${ item.id }
+      	data-phone-id=${ phone.id }
       	data-element="phone"
       	class="shopping-cart__item"
       >
       
 				<div class="shopping-cart__img">
-					<img alt="${ item.id }"
-					src="${ item.images[0] }">
+					<img alt="${ phone.id }"
+					src="${ phone.images[0] }">
 				</div>
 				
-				<span class="shopping-cart__name">${ item.name }</span>
+				<span class="shopping-cart__name">${ phone.name }</span>
 				<span 
 					data-element="item-count"
 					class="shopping-cart__amount"
@@ -74,7 +73,7 @@ export default class ShoppingCart extends Component {
 				</span>
 				
 				<span 
-					data-phone-id=${ item.id }
+					data-phone-id=${ phone.id }
 					data-element="item-del"
 					class="shopping-cart__delete"
 				>
@@ -93,11 +92,12 @@ export default class ShoppingCart extends Component {
       	class="shopping-cart__list"
       >
       
-        ${ [...this._items].map(item =>
-
-					this._getItemHtml(item[0], item[1])
-
-				).join('') }
+        ${ [...this._itemsMap].map(item => {
+					let phone = item[0], count = item[1];
+		
+					return this._getItemHtml(phone, count);
+		
+				}).join('') }
         
       </ul>
     `;
