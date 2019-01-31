@@ -111,3 +111,39 @@ ul.specs dt {
 h1 {
   border-bottom: 1px solid gray;
 }
+
+.shopping-cart__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.shopping-cart__item {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin-bottom: 5px;
+  padding: 7px;
+  background-color: #fff;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+  font-size: 12px;
+}
+.shopping-cart__img {
+  width: 30px;
+  height: 30px;
+  margin-right: 8px;
+}
+.shopping-cart__img img {
+  display: block;
+  width: 100%;
+}
+.shopping-cart__name {
+  flex: 1 0 30px;
+}
+.shopping-cart__amount {
+  flex: 0 0 10px;
+  text-align: center;
+}
+.shopping-cart__delete {
+  font-size: 14px;
+  cursor: pointer;
+}
