@@ -86,20 +86,23 @@ export default class ShoppingCart extends Component {
 
 	_render() {
 		this._element.innerHTML = `
-      <p>Shopping Cart</p>
-      <ul 
-      	data-element="items-list"
-      	class="shopping-cart__list"
-      >
+      <h4>Shopping Cart</h4>
       
-        ${ [...this._itemsMap].map(item => {
-					let phone = item[0], count = item[1];
-		
-					return this._getItemHtml(phone, count);
-		
-				}).join('') }
-        
-      </ul>
+      ${ this._itemsMap.size > 0 ? `
+				<ul 
+					data-element="items-list"
+					class="shopping-cart__list"
+				>
+					${ [...this._itemsMap].map(item => {
+						let phone = item[0], count = item[1];
+			
+						return this._getItemHtml(phone, count);
+			
+					}).join('') }				
+				</ul>
+			` : `
+      	<p><i>No product has been <br/> selected yet.</i></p>
+      ` }
     `;
 	}
 }
