@@ -113,6 +113,7 @@ h1 {
 }
 
 .shopping-cart__list {
+  max-width: 350px;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -158,4 +159,12 @@ h1 {
   box-shadow: 2px 1px 5px rgba(0, 0, 0, 0.3);
   border-radius: 50%;
   transform: translateY(-50%);
+}
+@media screen {
+	.shopping-cart__list {
+		margin-left: 40px;
+		margin-bottom: 10px;
+		padding-bottom: 5px;
+		border-bottom: 1px solid silver;
+	}
 }

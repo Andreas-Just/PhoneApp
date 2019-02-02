@@ -1440,11 +1440,17 @@ const PhoneService = {
 	},
 
 	_filter(phones, query) {
-		return phones.filter(() => true);
+		return phones.filter(phone => {
+
+			return phone.id.toLowerCase().includes(query.toLowerCase());
+		});
 	},
 
 	_sortBy(phones, sortBy) {
-		return phones;
+		return phones.sort((phoneOne, phoneTwo) => {
+
+			return (phoneOne[sortBy] > phoneTwo[sortBy]) ? 1 : -1;
+		});
 	}
 };
 

@@ -5,6 +5,7 @@ export default class PhoneCatalog extends Component {
   	super({ element });
 
   	this._phones = [];
+		// console.log(this._phones);
 
     this._render();
 

@@ -45,7 +45,7 @@ export default class PhonesPage {
 
 		this._viewer.subscribe('back', () => {
 			this._viewer.hide();
-			this._catalog.show();
+			this._showPhones();
 		});
 
 		this._viewer.subscribe('added-from-viewer', (phoneId) => {
@@ -66,11 +66,11 @@ export default class PhonesPage {
 			element: document.querySelector('[data-component="filter"]'),
 		});
 
-		this._filter.subscribe('order-changed', (order) => {
+		this._filter.subscribe('order-changed', () => {
 			this._showPhones();
 		});
 
-		this._filter.subscribe('query-changed', (query) => {
+		this._filter.subscribe('query-changed', () => {
 			this._showPhones();
 		});
 	}
