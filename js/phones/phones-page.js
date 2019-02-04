@@ -33,7 +33,7 @@ export default class PhonesPage {
 
 		this._catalog.subscribe('added-from-catalog', (phoneId) => {
 			const phoneDetails = PhoneService.getById(phoneId);
-
+			console.log(phoneDetails);
 			this._cart.addItem(phoneDetails);
 		});
 	}
