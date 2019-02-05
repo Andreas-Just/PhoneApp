@@ -16,10 +16,9 @@ export default class Filter extends Component {
 			this.emit('order-changed');
 		});
 
-		const emitQueryChangedWithDebounce = debounce(
-			() => this.emit('query-changed'),
-			QUERY_CHANGE_DELAY
-		);
+		const emitQueryChangedWithDebounce = debounce(() => {
+			this.emit('query-changed');
+		}, QUERY_CHANGE_DELAY);
 
 		this.on('input', 'query-field', emitQueryChangedWithDebounce);
 	}

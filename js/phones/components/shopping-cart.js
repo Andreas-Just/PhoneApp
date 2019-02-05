@@ -1,5 +1,7 @@
 import Component from '../../component.js';
 
+const deepEqual = _.isEqual;
+
 export default class ShoppingCart extends Component {
 	constructor({ element }) {
 		super({ element });
@@ -16,23 +18,38 @@ export default class ShoppingCart extends Component {
 					this._delItem(phone, count, phoneId)
 			});
 		});
+
+		this._phoneAvailability = this._pullThePhone(deepEqual, this._itemsMap);
 	}
 
-	addItem(phoneId) {
+	_pullThePhone(func, map) {
+			return function(args) {
+
+				return [...map.keys()].find(item => {
+					if (func.call(this, args, item) ) {
+					  return item;
+					}
+				});
+			}
+		}
+
+	addItem(phoneDetails) {
+		console.log(this._phoneAvailability(phoneDetails));
 
 		if ( this._itemsMap.size ) {
 
-			if ( this._itemsMap.has(phoneId) ) {
-				let count = this._itemsMap.get(phoneId);
+			if ( this._phoneAvailability(phoneDetails).id === phoneDetails.id ) {
+				let count = this._itemsMap.get(this._phoneAvailability(phoneDetails));
+				console.log(count);
 				count++;
-				this._itemsMap.set(phoneId, count);
+				this._itemsMap.set(this._phoneAvailability(phoneDetails), count);
 
 			} else {
-				this._itemsMap.set(phoneId, 1);
+				this._itemsMap.set(phoneDetails, 1);
 			}
 
 		} else {
-			this._itemsMap.set(phoneId, 1);
+			this._itemsMap.set(phoneDetails, 1);
 		}
 
 		this._render();
