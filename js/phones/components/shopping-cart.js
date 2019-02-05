@@ -23,22 +23,22 @@ export default class ShoppingCart extends Component {
 	}
 
 	_pullThePhone(func, map) {
-			return function(args) {
+		return function(arg) {
 
-				return [...map.keys()].find(item => {
-					if (func.call(this, args, item) ) {
-					  return item;
-					}
-				});
-			}
+			return [...map.keys()].find(item => {
+				if (func.call(this, arg, item) ) {
+					return item;
+				}
+			});
 		}
+	}
 
 	addItem(phoneDetails) {
 		console.log(this._phoneAvailability(phoneDetails));
 
 		if ( this._itemsMap.size ) {
 
-			if ( this._phoneAvailability(phoneDetails).id === phoneDetails.id ) {
+			if ( deepEqual(this._phoneAvailability(phoneDetails), phoneDetails) ) {
 				let count = this._itemsMap.get(this._phoneAvailability(phoneDetails));
 				console.log(count);
 				count++;

@@ -1,4 +1,6 @@
 .idea
 .git
+node_modules
+package-lock.json
 /**/Thumbs.db
 /**/*.DS_Store
