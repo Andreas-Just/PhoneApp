@@ -1,5 +1,7 @@
 import Component from '../../component.js';
 
+const deepEqual = _.isEqual;
+
 export default class ShoppingCart extends Component {
 	constructor({ element }) {
 		super({ element });
@@ -16,23 +18,38 @@ export default class ShoppingCart extends Component {
 					this._delItem(phone, count, phoneId)
 			});
 		});
+
+		this._phoneAvailability = this._pullThePhone(deepEqual, this._itemsMap);
 	}
 
-	addItem(phoneId) {
+	_pullThePhone(func, map) {
+		return function(arg) {
+
+			return [...map.keys()].find(item => {
+				if (func.call(this, arg, item) ) {
+					return item;
+				}
+			});
+		}
+	}
+
+	addItem(phoneDetails) {
+		console.log(this._phoneAvailability(phoneDetails));
 
 		if ( this._itemsMap.size ) {
 
-			if ( this._itemsMap.has(phoneId) ) {
-				let count = this._itemsMap.get(phoneId);
+			if ( deepEqual(this._phoneAvailability(phoneDetails), phoneDetails) ) {
+				let count = this._itemsMap.get(this._phoneAvailability(phoneDetails));
+				console.log(count);
 				count++;
-				this._itemsMap.set(phoneId, count);
+				this._itemsMap.set(this._phoneAvailability(phoneDetails), count);
 
 			} else {
-				this._itemsMap.set(phoneId, 1);
+				this._itemsMap.set(phoneDetails, 1);
 			}
 
 		} else {
-			this._itemsMap.set(phoneId, 1);
+			this._itemsMap.set(phoneDetails, 1);
 		}
 
 		this._render();
@@ -86,20 +103,23 @@ export default class ShoppingCart extends Component {
 
 	_render() {
 		this._element.innerHTML = `
-      <p>Shopping Cart</p>
-      <ul 
-      	data-element="items-list"
-      	class="shopping-cart__list"
-      >
+      <h4>Shopping Cart</h4>
       
-        ${ [...this._itemsMap].map(item => {
-					let phone = item[0], count = item[1];
-		
-					return this._getItemHtml(phone, count);
-		
-				}).join('') }
-        
-      </ul>
+      ${ this._itemsMap.size > 0 ? `
+				<ul 
+					data-element="items-list"
+					class="shopping-cart__list"
+				>
+					${ [...this._itemsMap].map(item => {
+						let phone = item[0], count = item[1];
+			
+						return this._getItemHtml(phone, count);
+			
+					}).join('') }				
+				</ul>
+			` : `
+      	<p><i>No product has been <br/> selected yet.</i></p>
+      ` }
     `;
 	}
 }
