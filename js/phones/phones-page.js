@@ -5,10 +5,10 @@ import ShoppingCart from './components/shopping-cart.js';
 import PhoneService from './services/phone-service.js';
 
 export default class PhonesPage {
-  constructor({ element }) {
-    this._element = element;
+	constructor({ element }) {
+		this._element = element;
 
-    this._render();
+		this._render();
 
 		this._initCatalog();
 		this._initViewer();
@@ -23,19 +23,22 @@ export default class PhonesPage {
 			element: document.querySelector('[data-component="phone-catalog"]'),
 		});
 
-		this._catalog.subscribe('phone-selected', (phoneId) => {
+		this._catalog.subscribe(
+			'phone-selected',
+			async (phoneId) => {
+				const phoneDetails = await PhoneService.getById(phoneId);
 
-			PhoneService.getById(phoneId, (phoneDetails) => {
 				this._catalog.hide();
 				this._viewer.show(phoneDetails);
 			});
-		});
 
-		this._catalog.subscribe('added-from-catalog', (phoneId) => {
-			PhoneService.getById(phoneId, (phoneDetails) => {
+		this._catalog.subscribe(
+			'added-from-catalog',
+			async (phoneId) => {
+				const phoneDetails = await PhoneService.getById(phoneId);
+
 				this._cart.addItem(phoneDetails);
 			});
-		});
 	}
 
 	_initViewer() {
@@ -48,11 +51,13 @@ export default class PhonesPage {
 			this._showPhones();
 		});
 
-		this._viewer.subscribe('added-from-viewer', (phoneId) => {
-			PhoneService.getById(phoneId, (phoneDetails) => {
+		this._viewer.subscribe(
+			'added-from-viewer',
+			async (phoneId) => {
+				const phoneDetails = await PhoneService.getById(phoneId);
+
 				this._cart.addItem(phoneDetails);
 			});
-		});
 	}
 
 	_initShoppingCart() {
@@ -75,16 +80,15 @@ export default class PhonesPage {
 		});
 	}
 
-	_showPhones() {
+	async _showPhones() {
 		const currentFiltering = this._filter.getCurrentData();
+		const phones = await PhoneService.getAll(currentFiltering);
 
-		PhoneService.getAll(currentFiltering, (phoneDescription) => {
-			this._catalog.show(phoneDescription);
-		});
+		this._catalog.show(phones);
 	}
 
-  _render() {
-    this._element.innerHTML = `
+	_render() {
+		this._element.innerHTML = `
       <div class="row">
 
 				<!--Sidebar-->
@@ -106,5 +110,5 @@ export default class PhonesPage {
 				</div>
 			</div>
     `;
-  }
+	}
 }
