@@ -87,6 +87,16 @@ export default class PhonesPage {
 		});
 	}
 
+	_initMessage(text) {
+		this._error = document.querySelector('[data-element="phone-massage"]');
+
+		this._error.hidden = false;
+		this._error.insertAdjacentHTML(
+			'afterBegin',
+			`<pre class="phones-page__text">${ text }</pre>`
+		);
+	}
+
 	async _showPhones() {
 		const currentFiltering = this._filter.getCurrentData();
 		try {
@@ -94,7 +104,8 @@ export default class PhonesPage {
 			this._catalog.show(phones);
 
 		} catch (error) {
-			alert('Server is not available');
+
+			this._initMessage(error + '.\nServer is not available.');
 		}
 	}
 
@@ -114,9 +125,14 @@ export default class PhonesPage {
 				</div>
 		
 				<!--Main content-->
-				<div class="col-md-10">
+				<div class="col-md-10 phones-page">
 					<div data-component="phone-catalog"></div>
 					<div data-component="phone-viewer" hidden></div> 
+					<div 
+						data-element="phone-massage" 
+						class="phones-page__massage"
+						hidden
+					></div> 
 		
 				</div>
 			</div>
