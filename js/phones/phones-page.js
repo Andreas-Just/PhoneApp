@@ -26,7 +26,12 @@ export default class PhonesPage {
 		this._catalog.subscribe(
 			'phone-selected',
 			async (phoneId) => {
-				const phoneDetails = await PhoneService.getById(phoneId);
+				const phoneDetails = await PhoneService.getById(phoneId)
+					.catch(() => null);
+
+				if (!phoneDetails) {
+					return;
+				}
 
 				this._catalog.hide();
 				this._viewer.show(phoneDetails);
@@ -72,19 +77,25 @@ export default class PhonesPage {
 		});
 
 		this._filter.subscribe('order-changed', () => {
+			this._viewer.hide();
 			this._showPhones();
 		});
 
 		this._filter.subscribe('query-changed', () => {
+			this._viewer.hide();
 			this._showPhones();
 		});
 	}
 
 	async _showPhones() {
 		const currentFiltering = this._filter.getCurrentData();
-		const phones = await PhoneService.getAll(currentFiltering);
+		try {
+			const phones = await PhoneService.getAll(currentFiltering);
+			this._catalog.show(phones);
 
-		this._catalog.show(phones);
+		} catch (error) {
+			alert('Server is not available');
+		}
 	}
 
 	_render() {

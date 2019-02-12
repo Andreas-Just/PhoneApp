@@ -3,9 +3,7 @@ const BASE_URL = 'https://mate-academy.github.io/phone-catalogue-static';
 
 const PhoneService = {
 	async getAll({ query = '', sortBy = '' } = {}) {
-		const url = `${ BASE_URL }/phones/phones.json`;
-
-		const phonesFromServer = await this._sendRequest(url);
+		const phonesFromServer = await this._sendRequest('/phones/phones');
 
 		const filteredPhones = this._filter(phonesFromServer, query);
 		const sortedPhones = this._sortBy(filteredPhones, sortBy);
@@ -14,15 +12,13 @@ const PhoneService = {
 	},
 
 	getById(phoneId) {
-		const url = `${ BASE_URL }/phones/${phoneId}.json`;
-
-		return this._sendRequest(url);
+		return this._sendRequest(`/phones/${ phoneId }`);
 	},
 
 	_sendRequest(url) {
-		return fetch(url)
+		return fetch(`${ BASE_URL }${ url }.json`)
 			.then(response => response.json())
-			.catch(error => {
+			.catch((error) => {
 				console.warn(error);
 
 				return Promise.reject(error);
