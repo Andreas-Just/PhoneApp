@@ -1,6 +1,7 @@
+/* global _:true */
 import Component from '../../component.js';
 
-const deepEqual = _.isEqual;
+const { isEqual } = _;
 
 export default class ShoppingCart extends Component {
 	constructor({ element }) {
@@ -19,7 +20,7 @@ export default class ShoppingCart extends Component {
 			});
 		});
 
-		this._phoneAvailability = this._pullThePhone(deepEqual, this._itemsMap);
+		this._phoneAvailability = this._pullThePhone(isEqual, this._itemsMap);
 	}
 
 	_pullThePhone(func, map) {
@@ -38,8 +39,9 @@ export default class ShoppingCart extends Component {
 
 		if ( this._itemsMap.size ) {
 
-			if ( deepEqual(this._phoneAvailability(phoneDetails), phoneDetails) ) {
+			if ( isEqual(this._phoneAvailability(phoneDetails), phoneDetails) ) {
 				let count = this._itemsMap.get(this._phoneAvailability(phoneDetails));
+
 				console.log(count);
 				count++;
 				this._itemsMap.set(this._phoneAvailability(phoneDetails), count);

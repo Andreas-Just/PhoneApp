@@ -59,7 +59,7 @@ export default class PhoneCatalog extends Component {
 	
 						<a 
 							data-element="details-link"
-							href="#!/phones/motorola-xoom-with-wi-fi" 
+							href="#!/phones/${ phone.id }" 
 						>
 							${ phone.name }
 						</a>

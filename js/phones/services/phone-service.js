@@ -1,40 +1,28 @@
-const BASE_URL = 'https://mate-academy.github.io/phone-catalogue-static';
+const BASE_URL = 'https://andreas-just.github.io/library-json';
 // const BASE_URL = 'http://localhost:8080';
 
 const PhoneService = {
-	getAll({ query = '', sortBy = '' } = {}, callbackFromPage) {
-		const url = `${ BASE_URL }/phones/phones.json`;
+	async getAll({ query = '', sortBy = '' } = {}) {
+		const phonesFromServer = await this._sendRequest('/phones/phones');
 
-		const callbackForSendRequest = (phonesFromServer) => {
-			const filteredPhones = this._filter(phonesFromServer, query);
-			const sortedPhones = this._sortBy(filteredPhones, sortBy);
-			callbackFromPage(sortedPhones);
-		};
+		const filteredPhones = this._filter(phonesFromServer, query);
+		const sortedPhones = this._sortBy(filteredPhones, sortBy);
 
-		this._sendRequest(url, callbackForSendRequest);
+		return sortedPhones;
 	},
 
-	getById(phoneId, callback) {
-		const url = `${ BASE_URL }/phones/${phoneId}.json`;
-
-		this._sendRequest(url, callback);
+	getById(phoneId) {
+		return this._sendRequest(`/phones/${ phoneId }`);
 	},
 
-	_sendRequest(url, callback) {
-		let xhr = new XMLHttpRequest();
+	_sendRequest(url) {
+		return fetch(`${ BASE_URL }${ url }.json`)
+			.then(response => response.json())
+			.catch((error) => {
+				console.warn(error);
 
-		xhr.open('GET', url, true);
-		xhr.send();
-
-		xhr.onload = () => {
-			if (xhr.status !== 200) {
-				console.log(`${ xhr.status } ${ xhr.statusText }`);
-				return {};
-			}
-			const data = JSON.parse(xhr.responseText);
-
-			callback(data);
-		};
+				return Promise.reject(error);
+			});
 	},
 
 	_filter(phones, query) {
